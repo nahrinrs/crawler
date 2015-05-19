@@ -1,5 +1,8 @@
 package com.attune.crawler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +23,7 @@ public class Crawler extends WebCrawler {
 
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
                                                            + "|png|mp3|mp3|zip|gz))$");
+    private static DateFormat df = new SimpleDateFormat("[yyyyMMdd HHmmss] ");
 
      @Override
      public boolean shouldVisit(Page referringPage, WebURL url) {
@@ -35,7 +39,7 @@ public class Crawler extends WebCrawler {
      @Override
      public void visit(Page page) {
          String url = page.getWebURL().getURL();
-         //System.out.println("URL: " + url);
+         System.out.println("URL: " + url);
 
          if (page.getParseData() instanceof HtmlParseData) {
              HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -52,7 +56,7 @@ public class Crawler extends WebCrawler {
                      try{
                     	 JSONObject obj = new JSONObject(pr_data.get("variant-prices"));
                     	 JSONArray prices = obj.getJSONArray("prices");
-                    	 App.visitlog.println("product Name: " + productName + ", Color: " + color + ", Price: " + prices.getJSONObject(0).getString("display_price"));
+                    	 App.visitlog.println("URL: " + url +", product Name: " + productName + ", Color: " + color + ", Price: " + prices.getJSONObject(0).getString("display_price"));
                      } catch (Exception ex){
                     	 System.out.println(ex);
                      }
@@ -60,9 +64,15 @@ public class Crawler extends WebCrawler {
             	 
              }
              Set<WebURL> links = htmlParseData.getOutgoingUrls();
+             System.out.println("getOutgoingUrls: " + links.size());
          }
     }
-
+     @Override
+     protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
+			StringBuilder sb = new StringBuilder(df.format(Calendar.getInstance().getTime()));
+			sb.append(webUrl.getURL()).append(",").append(statusCode).append(",").append(statusDescription);
+			App.fetchlog.println(sb.toString());
+     }
 	private Map<String,String> getProductData(String html) {
 		Map<String, String> result = new HashMap<String, String>();
 		

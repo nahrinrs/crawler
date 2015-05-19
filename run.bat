@@ -1,1 +1,0 @@
-START cmd.exe /k "cd C:\Users\nahrinrs\Documents\GitHub\attune\challange\crawler && mvn compile exec:java -Dexec.mainClass=com.attune.crawler.App"
