@@ -53,7 +53,6 @@ public class Crawler extends WebCrawler {
              String text = htmlParseData.getText();
              String html = htmlParseData.getHtml();
              if (url.contains("https://bonobos.com/products")){
-                 System.out.println("html: " + html);
             	 Product product = parseData(url, html);
             	 if (product != null){
           			RunCrawler.visitlog.println(product.toString());
